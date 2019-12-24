@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>PowerData</title>
+  </head>
+  <body>
+    <button type="button" class="btn btn-secondary" id="previous"><--</button>
+    <button type="button" class="btn btn-secondary" id="next">--></button><br>
+    <table class="table table-dark" id="display"></table>
+    <script>
+      var xhr = new XMLHttpRequest();
+      var page = window.location.search.split('?')[1].split('=')[1] || 1;
+      xhr.addEventListener('load', function(){
+        document.getElementById('display').innerHTML += '<th>FileName</th><th>Label</th><th>File</th>'
+        
+        this.response.map(function(row) {
+          var imgSrc = '<a href="/img?id=' + row.file_id + '" target="_blank"><img src="/img?id=' + row.file_id + '" width="100"></a>'
+
+          document.getElementById('display').innerHTML += '<tr><td>'+ row.name +'</td>' + '<td>'+ row.label +'</td>' + '<td>'+ imgSrc +'</td></tr>'
+        })
+      });
+
+      xhr.responseType = 'json';
+      xhr.open('GET', '/origin_img?page=' + page);
+      xhr.send();
+
+      document.getElementById('previous').addEventListener('click', function(e) {
+        if(page > 1) page--;
+        window.location.href = '/pq-dump-v1?page=' + page;
+      })
+
+      document.getElementById('next').addEventListener('click', function(e) {
+        page++;
+        window.location.href = '/pq-dump-v1?page=' + page;
+      })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

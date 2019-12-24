@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>PowerData</title>
+  </head>
+  <body>
+    1張大圖共256張小圖，顯示判對少於<input type="text" id="threshold" placeholder="e.g. 192" value="192">個小圖的大圖<button id="send" class="btn btn-secondary">送出</button>
+    <div id="total"></div>
+    
+    <table class="table table-striped" id="display"></table>
+    <script>
+      document.getElementById('send').addEventListener('click', function(e) {
+        document.getElementById('total').innerHTML = '';
+        document.getElementById('display').innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function(){
+            document.getElementById('display').innerHTML = '';
+            document.getElementById('display').innerHTML += '<th>原始圖檔</th><th>判對數量</th><th>誤判細節</th>';
+            document.getElementById('total').innerHTML = '共' + this.response.length + '張低於門檻';
+            
+            this.response.map(function(row) {
+                var imgSrc = '<a href="/origin_img/get?name=' + row._id + '" target="_blank"><img src="/origin_img/get?name=' + row._id + '" width="100"></a>';
+                document.getElementById('display').innerHTML += '<tr><td>' + imgSrc + '</td><td>' + row.TRUE +'</td><td><a href="/detail?name=' + row._id + '">點此進入</a></td></tr>';
+            });
+        });
+
+        xhr.responseType = 'json';
+        xhr.open('GET', '/count/true?t=' + document.getElementById('threshold').value);
+        xhr.send();
+      });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

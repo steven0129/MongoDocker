@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+
+  # node:
+  #   image: 'node:13'
+  #   user: 'node'
+  #   working_dir: /home/app
+  #   environment:
+  #   - NODE_ENV=production
+  #   volumes:
+  #   - ./node/:/home/app
+  #   ports:
+  #   - 3000:3000
+  #   command: 'yarn start'
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+    volumes:
+      - /home1/steven/mongo-docker/mongo_data:/data/db
+      - /home1/steven/mongo-docker/external_data:/tmp/external_data
+
+  mongo-express:
+    links:
+      - mongo
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_OPTIONS_EDITORTHEME: 3024-night
+      ME_CONFIG_BASICAUTH_USERNAME: mongoexpress
+      ME_CONFIG_BASICAUTH_PASSWORD: mongoexpress
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin

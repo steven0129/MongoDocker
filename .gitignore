@@ -1,0 +1,3 @@
+external_data/*
+mongo_data/*
+node_modules/
